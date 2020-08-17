@@ -3,11 +3,11 @@ class SortingRobot:
         """
         SortingRobot takes a list and sorts it.
         """
-        self._list = l          # The list the robot is tasked with sorting
-        self._item = None       # The item the robot is holding
-        self._position = 0      # The list position the robot is at
-        self._light = "OFF"     # The state of the robot's light
-        self._time = 0          # A time counter (stretch)
+        self._list = l  # The list the robot is tasked with sorting
+        self._item = None  # The item the robot is holding
+        self._position = 0  # The list position the robot is at
+        self._light = "OFF"  # The state of the robot's light
+        self._time = 0  # A time counter (stretch)
 
     def can_move_right(self):
         """
@@ -81,30 +81,177 @@ class SortingRobot:
         Turn on the robot's light
         """
         self._light = "ON"
+
     def set_light_off(self):
         """
         Turn off the robot's light
         """
         self._light = "OFF"
+
     def light_is_on(self):
         """
         Returns True if the robot's light is on and False otherwise.
         """
         return self._light == "ON"
 
+    def check_left(self):
+        self.swap_item()
+        self.move_left()
+        return self.compare_item()
+
+    def shift_right(self):
+        self.swap_item()
+        self.move_right()
+        self.swap_item()
+        self.move_left()
+
     def sort(self):
         """
         Sort the robot's list.
         """
-        # Fill this out
-        pass
+        # We are going to continue to loop until we manually break out with a
+        # return.
+        while True:
+            # Pick up the first item and drop our 'None'. This 'None' will mark
+            # where the sorted part of the array ends.
+            self.swap_item()
+            while self.can_move_right():
+                # Move to the end while looking for a bigger item
+                self.move_right()
+                if self.compare_item() == 1:
+                    # If a bigger item is found, drop the one we're holding
+                    # and pick up the bigger one. The biggest will make it to
+                    # the end and the rest will get dragged at least part way.
+                    self.swap_item()
+
+            while self.can_move_left():
+                self.move_left()
+
+            # Starting from the beginning, move right until we find the original
+            # 'None' we dropped
+            while self.can_move_right() and self.compare_item() is not None:
+                self.move_right()
+
+            # Pick up the 'None'
+            self.swap_item()
+
+            self.move_right()
+            # If there's anything to the right, it means we have not yet sorted
+            # the whole array so we'll start over and begin by dropping 'None'
+            # 1 spot to the right of where we started the loop. The sorted
+            # section of the array will increase in size and our next iterations
+            # will continue to get shorter.
+            if not self.can_move_right():
+                # Once we're at the end, we stop while still holding the 'None'.
+                return
 
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
     # with `python robot_sort.py`
 
-    l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
+    l = [
+        15,
+        41,
+        58,
+        49,
+        26,
+        4,
+        28,
+        8,
+        61,
+        60,
+        65,
+        21,
+        78,
+        14,
+        35,
+        90,
+        54,
+        5,
+        0,
+        87,
+        82,
+        96,
+        43,
+        92,
+        62,
+        97,
+        69,
+        94,
+        99,
+        93,
+        76,
+        47,
+        2,
+        88,
+        51,
+        40,
+        95,
+        6,
+        23,
+        81,
+        30,
+        19,
+        25,
+        91,
+        18,
+        68,
+        71,
+        9,
+        66,
+        1,
+        45,
+        33,
+        3,
+        72,
+        16,
+        85,
+        27,
+        59,
+        64,
+        39,
+        32,
+        24,
+        38,
+        84,
+        44,
+        80,
+        11,
+        73,
+        42,
+        20,
+        10,
+        29,
+        22,
+        98,
+        17,
+        48,
+        52,
+        67,
+        53,
+        74,
+        77,
+        37,
+        63,
+        31,
+        7,
+        75,
+        36,
+        89,
+        70,
+        34,
+        79,
+        83,
+        13,
+        57,
+        86,
+        12,
+        56,
+        50,
+        55,
+        46,
+    ]
 
     robot = SortingRobot(l)
 
