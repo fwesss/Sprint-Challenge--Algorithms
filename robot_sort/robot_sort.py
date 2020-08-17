@@ -109,23 +109,41 @@ class SortingRobot:
         """
         Sort the robot's list.
         """
-        self.move_right()
-        while self.can_move_right():
-            while self.can_move_left() and self.can_move_right():
-                if self.check_left() == -1:
-                    self.shift_right()
-                else:
-                    self.move_right()
+        # We are going to continue to loop until we manually break out with a
+        # return.
+        while True:
+            # Pick up the first item and drop our 'None'. This 'None' will mark
+            # where the sorted part of the array ends.
+            self.swap_item()
+            while self.can_move_right():
+                # Move to the end while looking for a bigger item
+                self.move_right()
+                if self.compare_item() == 1:
+                    # If a bigger item is found, drop the one we're holding
+                    # and pick up the bigger one. The biggest will make it to
+                    # the end and the rest will get dragged at least part way.
                     self.swap_item()
-                    self.move_right()
+
+            while self.can_move_left():
+                self.move_left()
+
+            # Starting from the beginning, move right until we find the original
+            # 'None' we dropped
+            while self.can_move_right() and self.compare_item() is not None:
+                self.move_right()
+
+            # Pick up the 'None'
+            self.swap_item()
 
             self.move_right()
-            if self.check_left() == -1:
-                self.shift_right()
-            else:
-                self.move_right()
-                self.swap_item()
-                self.move_right()
+            # If there's anything to the right, it means we have not yet sorted
+            # the whole array so we'll start over and begin by dropping 'None'
+            # 1 spot to the right of where we started the loop. The sorted
+            # section of the array will increase in size and our next iterations
+            # will continue to get shorter.
+            if not self.can_move_right():
+                # Once we're at the end, we stop while still holding the 'None'.
+                return
 
 
 if __name__ == "__main__":
